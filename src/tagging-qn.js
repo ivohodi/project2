@@ -51,6 +51,52 @@ export class TaggingQn extends DDD {
     `];
   }
 
+// draggable(){
+// const fills = document.querySelectorAll('.fill');
+// const empties = document.querySelectorAll('.empty');
+// var dragging = {};
+// // Loop through empty boxes and add listeners
+// for (const empty of empties) {
+//   empty.addEventListener('dragover', dragOver);
+//   empty.addEventListener('dragenter', dragEnter);
+//   empty.addEventListener('dragleave', dragLeave);
+//   empty.addEventListener('drop', dragDrop);
+// }
+// // Loop through fills and add listeners
+// for (const fill of fills) {
+//   fill.addEventListener('dragstart', dragStart);
+//   fill.addEventListener('dragend', dragEnd);
+// }
+
+// Drag Functions
+
+dragStart() {
+  dragging = this;
+  this.className += ' hold';
+  setTimeout(() => (this.className = 'invisible'), 0);
+}
+
+dragEnd() {
+  this.className = 'fill';
+}
+
+dragOver(e) {
+  e.preventDefault();
+}
+dragEnter(e) {
+  e.preventDefault();
+  this.className += ' hovered';
+}
+
+dragLeave() {
+  this.className = 'empty';
+}
+
+dragDrop() {
+  this.className = 'empty';
+  this.append(dragging);
+}
+  //}
 
   render() {
     return html`
@@ -58,7 +104,6 @@ export class TaggingQn extends DDD {
         <h1 >${this.title}</h1>
         <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
         <div>${this.questiontext}</div>
-
         <div class="answer-box" @drop="${(e) => this.drop(e, 'input-area')}" @dragover="${this.allowDrop}">Drag Answers Here</div>
         ${this.answers.map((answer, index) => html`
         <div class="answers-wrapper">
