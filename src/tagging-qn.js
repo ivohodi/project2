@@ -51,52 +51,81 @@ export class TaggingQn extends DDD {
     `];
   }
 
-// draggable(){
-// const fills = document.querySelectorAll('.fill');
-// const empties = document.querySelectorAll('.empty');
-// var dragging = {};
-// // Loop through empty boxes and add listeners
-// for (const empty of empties) {
-//   empty.addEventListener('dragover', dragOver);
-//   empty.addEventListener('dragenter', dragEnter);
-//   empty.addEventListener('dragleave', dragLeave);
-//   empty.addEventListener('drop', dragDrop);
-// }
-// // Loop through fills and add listeners
-// for (const fill of fills) {
-//   fill.addEventListener('dragstart', dragStart);
-//   fill.addEventListener('dragend', dragEnd);
-// }
+  firstUpdated() {
+    super.firstUpdated();
+    const optionsBox = this.shadowRoot.querySelectorAll('.options-box');
+    const answerBox = this.shadowRoot.querySelectorAll('.answer-box');
+
+    answerBoxes.forEach(optionsBox => {
+      answerBox.addEventListener('dragstart', (e) => this.dragStart(e));
+      answerBox.addEventListener('dragover', (e) => this.dragOver(e));
+      answerBox.addEventListener('dragenter', (e) => this.dragEnter(e));
+      answerBox.addEventListener('dragleave', (e) => this.dragLeave(e));
+      answerBox.addEventListener('drop', (e) => this.drop(e, 'options-box'));
+    });
+
+    questionBoxes.forEach(answerBox => {
+      questionBox.addEventListener('dragstart', (e) => this.dragStart(e));
+      questionBox.addEventListener('dragover', (e) => this.dragOver(e));
+      questionBox.addEventListener('dragenter', (e) => this.dragEnter(e));
+      questionBox.addEventListener('dragleave', (e) => this.dragLeave(e));
+      questionBox.addEventListener('drop', (e) => this.drop(e, 'answer-box'));
+    });
+  }
 
 // Drag Functions
 
-dragStart() {
-  dragging = this;
-  this.className += ' hold';
-  setTimeout(() => (this.className = 'invisible'), 0);
-}
-
-dragEnd() {
-  this.className = 'fill';
-}
+dragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.textContent);
+  this.currentTag = e.target;
+  }
 
 dragOver(e) {
   e.preventDefault();
 }
 dragEnter(e) {
   e.preventDefault();
-  this.className += ' hovered';
+  e.target.classList.add('hovered');
 }
 
-dragLeave() {
-  this.className = 'empty';
+dragLeave(e) {
+  e.target.classList.remove('hovered');
 }
 
-dragDrop() {
+dragDrop(e) {
+  e.preventDefault();
   this.className = 'empty';
   this.append(dragging);
 }
+
+importdata(){
+  supder.importdata();
+  const choices=this.choices;
+  fetch('src/data.json')
+      .then((response) => response.json())
+      .then((json) => {
+        const choicestag = this.shadowRoot.getElementById('choicestag');
+        const choices = json[choices];
+        
+        const buttons = [];
+        for (const key in choices) {
+          const option = choices[key];
+          const button = document.createElement('button');
+          button.classList.add('chip');
+          button.draggable = true;
+          button.textContent = key;
+          button.dataset.correct = option.correct;
+          button.dataset.feedback = option.feedback;
+          button.addEventListener('dragstart', this.handleDragStart.bind(this));
+          buttons.push(button);
+        }});
+        
+        buttons.forEach(button => {
+          choicestag.appendChild(button);
+        });
+}
   //}
+  
 
   render() {
     return html`
@@ -104,7 +133,11 @@ dragDrop() {
         <h1 >${this.title}</h1>
         <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
         <div>${this.questiontext}</div>
-        <div class="answer-box" @drop="${(e) => this.drop(e, 'input-area')}" @dragover="${this.allowDrop}">Drag Answers Here</div>
+        <div class="answer-box" @drop="${(e) => this.drop(e, 'input-area')}" @dragover="${this.allowDrop}">
+        Drag Answers Here
+        <button class="clearbtn"> Clear</button>
+        <button class="submitbtn"> Submit</button>
+        </div>
         ${this.answers.map((answer, index) => html`
         <div class="answers-wrapper">
                         <div class="answers" draggable="true" @dragstart="${() => this.drag(index)}">${answer}</div>
@@ -132,6 +165,4 @@ dragDrop() {
     };
   }
 }
-
-
 globalThis.customElements.define(TaggingQn.tag, TaggingQn);
