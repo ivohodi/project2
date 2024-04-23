@@ -12,6 +12,8 @@ export class TaggingQn extends DDD {
     this.title = "Question Tags";
     this.options=["AI generated","Beautiful","Good Form","Accessible"];
     this.answers=[];
+    this.draggedIndex;
+    this.draggedFrom;
   }
 
   static get styles() {
@@ -56,28 +58,28 @@ export class TaggingQn extends DDD {
     const optionsBox = this.shadowRoot.querySelectorAll('.options-box');
     const answerBox = this.shadowRoot.querySelectorAll('.answer-box');
 
-    answerBoxes.forEach(optionsBox => {
+    optionsBox.forEach(optionsBox => {
+      optionsBox.addEventListener('dragstart', (e) => this.dragStart(e));
+      optionsBox.addEventListener('dragover', (e) => this.dragOver(e));
+      optionsBox.addEventListener('dragenter', (e) => this.dragEnter(e));
+      optionsBox.addEventListener('dragleave', (e) => this.dragLeave(e));
+      optionsBox.addEventListener('drop', (e) => this.drop(e, 'options-box'));
+    });
+
+    answerBox.forEach(answerBox => {
       answerBox.addEventListener('dragstart', (e) => this.dragStart(e));
       answerBox.addEventListener('dragover', (e) => this.dragOver(e));
       answerBox.addEventListener('dragenter', (e) => this.dragEnter(e));
       answerBox.addEventListener('dragleave', (e) => this.dragLeave(e));
-      answerBox.addEventListener('drop', (e) => this.drop(e, 'options-box'));
-    });
-
-    questionBoxes.forEach(answerBox => {
-      questionBox.addEventListener('dragstart', (e) => this.dragStart(e));
-      questionBox.addEventListener('dragover', (e) => this.dragOver(e));
-      questionBox.addEventListener('dragenter', (e) => this.dragEnter(e));
-      questionBox.addEventListener('dragleave', (e) => this.dragLeave(e));
-      questionBox.addEventListener('drop', (e) => this.drop(e, 'answer-box'));
+      answerBox.addEventListener('drop', (e) => this.drop(e, 'answer-box'));
     });
   }
 
 // Drag Functions
 
 dragStart(e) {
-  e.dataTransfer.setData('text/plain', e.target.textContent);
-  this.currentTag = e.target;
+  this.draggedIndex = parseInt(e.target.dataset.index);
+  this.draggedFrom = e.target.dataset.origin;
   }
 
 dragOver(e) {
@@ -92,10 +94,19 @@ dragLeave(e) {
   e.target.classList.remove('hovered');
 }
 
-dragDrop(e) {
+drop(e, target) {
   e.preventDefault();
-  this.className = 'empty';
-  this.append(dragging);
+  if (target === 'answer-box') {
+    if (this.draggedFrom != 'answer-box') {
+      this.answers.push(this.options[this.draggedIndex]);
+      this.options.splice(this.draggedIndex, 1);
+    }
+  } else if (target === 'options-box') {
+    if (this.draggedFrom != 'options-box') {
+      this.options.push(this.answers[this.draggedIndex]);
+      this.answers.splice(this.draggedIndex, 1);
+    }
+  }
 }
 
 importdata(){
@@ -133,22 +144,23 @@ importdata(){
         <h1 >${this.title}</h1>
         <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
         <div>${this.questiontext}</div>
-        <div class="answer-box" @drop="${(e) => this.drop(e, 'input-area')}" @dragover="${this.allowDrop}">
-        Drag Answers Here
-        <button class="clearbtn"> Clear</button>
-        <button class="submitbtn"> Submit</button>
+        <div class="answer-box">
+          Drag Answers Here
+          ${this.answers.map((answer, index) => html`
+          <div class="answers-wrapper">
+            <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
+          </div>
+          `)}
+          </div>
         </div>
-        ${this.answers.map((answer, index) => html`
-        <div class="answers-wrapper">
-                        <div class="answers" draggable="true" @dragstart="${() => this.drag(index)}">${answer}</div>
-                    </div>
-                    `)}
-                </div>
-
+        <div>
+          <button class="clearbtn"> Clear</button>
+          <button class="submitbtn"> Submit</button>
+        </div>
         <div class="options-box">
-        ${this.options.map((question, index) => html`
+        ${this.options.map((option, index) => html`
         <div class="options">
-          <div class="answers" draggable="true" @dragstart="${() => this.drag(index)}">${question}</div>
+          <div draggable="true" data-index="${index}" data-origin="options-box">${option}</div>
         </div>
         </div>
         `)}
@@ -162,6 +174,8 @@ importdata(){
       questiontext: {type:String},
       options:{type:Array, reflect:true},
       answers:{type:Array, reflect:true},
+      draggedIndex: { type: Number, reflect: true },
+      draggedFrom: { type: String, reflect: true},
     };
   }
 }
