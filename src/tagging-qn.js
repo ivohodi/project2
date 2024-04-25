@@ -42,7 +42,7 @@ export class TaggingQn extends DDD {
       .options-box{
         display:flex;
       }
-      .options{
+      .options,.answers{
         border:solid 2px black;
         padding:var(--ddd-spacing-2);
         margin: var(--ddd-spacing-2);
@@ -58,6 +58,14 @@ export class TaggingQn extends DDD {
     const optionsBox = this.shadowRoot.querySelectorAll('.options-box');
     const answerBox = this.shadowRoot.querySelectorAll('.answer-box');
 
+    answerBox.forEach(answerBox => {
+      answerBox.addEventListener('dragstart', (e) => this.dragStart(e));
+      answerBox.addEventListener('dragover', (e) => this.dragOver(e));
+      answerBox.addEventListener('dragenter', (e) => this.dragEnter(e));
+      answerBox.addEventListener('dragleave', (e) => this.dragLeave(e));
+      answerBox.addEventListener('drop', (e) => this.drop(e, 'answer-box'));
+    });
+
     optionsBox.forEach(optionsBox => {
       optionsBox.addEventListener('dragstart', (e) => this.dragStart(e));
       optionsBox.addEventListener('dragover', (e) => this.dragOver(e));
@@ -66,13 +74,6 @@ export class TaggingQn extends DDD {
       optionsBox.addEventListener('drop', (e) => this.drop(e, 'options-box'));
     });
 
-    answerBox.forEach(answerBox => {
-      answerBox.addEventListener('dragstart', (e) => this.dragStart(e));
-      answerBox.addEventListener('dragover', (e) => this.dragOver(e));
-      answerBox.addEventListener('dragenter', (e) => this.dragEnter(e));
-      answerBox.addEventListener('dragleave', (e) => this.dragLeave(e));
-      answerBox.addEventListener('drop', (e) => this.drop(e, 'answer-box'));
-    });
   }
 
 // Drag Functions
@@ -96,6 +97,8 @@ dragLeave(e) {
 
 drop(e, target) {
   e.preventDefault();
+  e.target.classList.remove('hovered');
+
   if (target === 'answer-box') {
     if (this.draggedFrom != 'answer-box') {
       this.answers.push(this.options[this.draggedIndex]);
@@ -107,45 +110,57 @@ drop(e, target) {
       this.answers.splice(this.draggedIndex, 1);
     }
   }
+  this.requestUpdate();
 }
 
-importdata(){
-  supder.importdata();
-  const choices=this.choices;
-  fetch('src/data.json')
-      .then((response) => response.json())
-      .then((json) => {
-        const choicestag = this.shadowRoot.getElementById('choicestag');
-        const choices = json[choices];
-        
-        const buttons = [];
-        for (const key in choices) {
-          const option = choices[key];
-          const button = document.createElement('button');
-          button.classList.add('chip');
-          button.draggable = true;
-          button.textContent = key;
-          button.dataset.correct = option.correct;
-          button.dataset.feedback = option.feedback;
-          button.addEventListener('dragstart', this.handleDragStart.bind(this));
-          buttons.push(button);
-        }});
-        
-        buttons.forEach(button => {
-          choicestag.appendChild(button);
-        });
+makeItRain() { //confetti 
+  import("@lrnwebcomponents/multiple-choice/lib/confetti-container.js").then(
+    (module) => {
+      setTimeout(() => {
+        this.shadowRoot.querySelector("#confetti").setAttribute("popped", "");
+      }, 0);
+    }
+  );
 }
-  //}
+
+// importdata(){
+//   supder.importdata();
+//   const choices=this.choices;
+//   fetch('src/data.json')
+//       .then((response) => response.json())
+//       .then((json) => {
+//         const choicestag = this.shadowRoot.getElementById('choicestag');
+//         const choices = json[choices];
+        
+//         const buttons = [];
+//         for (const key in choices) {
+//           const option = choices[key];
+//           const button = document.createElement('button');
+//           button.classList.add('chip');
+//           button.draggable = true;
+//           button.textContent = key;
+//           button.dataset.correct = option.correct;
+//           button.dataset.feedback = option.feedback;
+//           button.addEventListener('dragstart', this.handleDragStart.bind(this));
+//           buttons.push(button);
+//         }});
+        
+//         buttons.forEach(button => {
+//           choicestag.appendChild(button);
+//         });
+// }
+//   //}
   
 
   render() {
     return html`
+      <confetti-container id="confetti">
       <div class="tagging-wrapper"> 
         <h1 >${this.title}</h1>
         <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
         <div>${this.questiontext}</div>
         <div class="answer-box">
-          Drag Answers Here
+          <!-- Drag Answers Here -->
           ${this.answers.map((answer, index) => html`
           <div class="answers-wrapper">
             <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
@@ -155,7 +170,7 @@ importdata(){
         </div>
         <div>
           <button class="clearbtn"> Clear</button>
-          <button class="submitbtn"> Submit</button>
+          <button class="submitbtn" @click="${this.makeItRain}"> Submit</button>
         </div>
         <div class="options-box">
         ${this.options.map((option, index) => html`
@@ -164,6 +179,7 @@ importdata(){
         </div>
         </div>
         `)}
+        </confetti-container>
       </div>
     `;
   }
