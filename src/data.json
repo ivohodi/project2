@@ -1,19 +1,77 @@
-[
-    {
-      "name": "Molecule Man",
-      "age": 29,
-      "secretIdentity": "Dan Jukes",
-      "powers": ["Radiation resistance", "Turning tiny", "Radiation blast"]
+{
+  "default": {
+  "Yes": {
+    "correct": true,
+    "feedback": "Well that was easy"
+  },
+  "No": {
+    "correct": false,
+    "feedback": "I mean... what did you expect?"
+  }
+},
+  "haxLogo": {
+    "good form": {
+      "correct": true,
+      "feedback": "The shape of the vase clearly demonstrates craftsmanship."
     },
-    {
-      "name": "Madame Uppercut",
-      "age": 39,
-      "secretIdentity": "Jane Wilson",
-      "powers": [
-        "Million tonne punch",
-        "Damage resistance",
-        "Superhuman reflexes"
-      ]
+    "poor taste": {
+      "correct": false,
+      "feedback": "Taste is in the eye of the designer as well as the viewer."
+    },
+    "contrasting themes": {
+      "correct": false,
+      "feedback": "There is uniformity in the shape, but there is no depth to this media to imply that it is contrasting with other figures."
+    },
+    "AI": {
+      "correct": true,
+      "feedback": "While a modification of prior work, this is still AI generative work."
+    },
+    "shading": {
+      "correct": false,
+      "feedback": "While there is a light source and a shadow cast, shading is a term used for pencil based sketching."
+    },
+    "original work": {
+      "correct": false,
+      "feedback": "Artwork created from gerenateive AI can not be original since it is trained on other artists work."
+    },
+    "accessible": {
+      "correct": false,
+      "feedback": "The color scheme while high contrast in some areas, loses form in others and has written text unrelated to the character."
     }
-  ]
+  },
+  "8bitSpace": {
+    "Space is purple": {
+      "correct": true,
+      "feedback": "The background is purple!"
+    },
+    "Has rocketship": {
+      "correct": true,
+      "feedback": "The rocketship is above the moon!"
+    },
+    "has Earth": {
+      "correct": false,
+      "feedback": "There is only a moon!"
+    },
+    "has astronauts": {
+      "correct": false,
+      "feedback": "No humans in the picture!"
+    },
+    "is realistic": {
+      "correct": false,
+      "feedback": "Image is 8bit!"
+    },
+    "has stars": {
+      "correct": true,
+      "feedback": "There are many stars!"
+    },
+    "rocket is stationary": {
+      "correct": false,
+      "feedback": "Rocket is flying!"
+    },
+    "UFO?": {
+      "correct": false,
+      "feedback": "No signs of alien life!"
+    }
+  }
+}
   

@@ -10,10 +10,11 @@ export class TaggingQn extends DDD {
   constructor() {
     super();
     this.title = "Question Tags";
-    this.options=["AI generated","Beautiful","Good Form","Accessible"];
+    this.options=[];
     this.answers=[];
     this.draggedIndex;
     this.draggedFrom;
+    this.answerSet = "default";
   }
 
   static get styles() {
@@ -29,7 +30,7 @@ export class TaggingQn extends DDD {
       .answer-box,.options-box{
         display: inline-block;
         height: 160px;
-        width: 90%;
+        width:90%;
         padding:var(--ddd-spacing-4);
         margin: var(--ddd-spacing-5);
         border: solid 3px var(--ddd-theme-default-creekTeal);
@@ -49,8 +50,41 @@ export class TaggingQn extends DDD {
         width:150px;
         height:30px; 
       }
-    
-    `];
+    .clearbtn,.submitbtn{
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: var(--ddd-theme-default-coalyGray);
+    cursor: pointer;
+    border: 3px solid;
+    padding: var(--ddd-spacing-2);
+    margin:var(--ddd-spacing-2);
+    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+
+    .clearbtn:active,.submitbtn:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+  }
+
+  @media (min-width: 768px) {
+    .clearbtn,.submitbtn {
+      padding: 0.25em 0.75em;
+    }
+  }
+  .button-wrapper{
+    display:flex;
+    justify-content:right;
+    margin-right:var(--ddd-spacing-8);
+  }
+      
+      `];
   }
 
   firstUpdated() {
@@ -73,7 +107,7 @@ export class TaggingQn extends DDD {
       optionsBox.addEventListener('dragleave', (e) => this.dragLeave(e));
       optionsBox.addEventListener('drop', (e) => this.drop(e, 'options-box'));
     });
-
+    this.getData();
   }
 
 // Drag Functions
@@ -123,34 +157,47 @@ makeItRain() { //confetti
   );
 }
 
-// importdata(){
-//   supder.importdata();
-//   const choices=this.choices;
-//   fetch('src/data.json')
-//       .then((response) => response.json())
-//       .then((json) => {
-//         const choicestag = this.shadowRoot.getElementById('choicestag');
-//         const choices = json[choices];
-        
-//         const buttons = [];
-//         for (const key in choices) {
-//           const option = choices[key];
-//           const button = document.createElement('button');
-//           button.classList.add('chip');
-//           button.draggable = true;
-//           button.textContent = key;
-//           button.dataset.correct = option.correct;
-//           button.dataset.feedback = option.feedback;
-//           button.addEventListener('dragstart', this.handleDragStart.bind(this));
-//           buttons.push(button);
-//         }});
-        
-//         buttons.forEach(button => {
-//           choicestag.appendChild(button);
-//         });
-// }
-//   //}
-  
+clearOptions(){
+  if (this.answers != '') {
+    this.answers.forEach(answer => {
+      this.options.push(answer);
+    });
+    this.answers = [];
+  }
+  this.shuffle();
+  this.requestUpdate();
+}
+
+getData() {
+  fetch('src/data.json')
+    .then((response) => response.json())
+    .then((json) => {
+      const possibleQuestions = json[this.answerSet];
+
+      this.options = [];
+      const tags = [];
+      for (const key in possibleQuestions) {
+        const option = possibleQuestions[key];
+        const choice = document.createElement('choices');
+        choice.textContent = key;
+        choice.dataset.correct = option.correct;
+        choice.dataset.feedback = option.feedback;
+        tags.push(choice);
+      }
+
+      tags.forEach(choice => {
+        this.options.push(choice);
+      });
+      this.shuffle();
+  });
+}
+
+shuffle() {
+  for (let i = this.options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [this.options[i], this.options[j]] = [this.options[j], this.options[i]];
+  }
+}
 
   render() {
     return html`
@@ -160,7 +207,7 @@ makeItRain() { //confetti
         <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
         <div>${this.questiontext}</div>
         <div class="answer-box">
-          <!-- Drag Answers Here -->
+          Drag Answers Here
           ${this.answers.map((answer, index) => html`
           <div class="answers-wrapper">
             <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
@@ -168,10 +215,13 @@ makeItRain() { //confetti
           `)}
           </div>
         </div>
-        <div>
-          <button class="clearbtn"> Clear</button>
+
+        <div class="button-wrapper">
+          <button class="clearbtn" @click="${this.clearOptions}"> Clear</button>
           <button class="submitbtn" @click="${this.makeItRain}"> Submit</button>
         </div>
+        
+        
         <div class="options-box">
         ${this.options.map((option, index) => html`
         <div class="options">
@@ -192,6 +242,7 @@ makeItRain() { //confetti
       answers:{type:Array, reflect:true},
       draggedIndex: { type: Number, reflect: true },
       draggedFrom: { type: String, reflect: true},
+      answerSet: { type: String, reflect: true},
     };
   }
 }
