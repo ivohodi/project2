@@ -22,33 +22,33 @@ export class TaggingQn extends DDD {
         super.styles,
         css`
         :host {
-        display: block;
+        display: flex;
       }
       .tagging-wrapper{
         padding:var(--ddd-spacing-2);
       }
       .answer-box,.options-box{
-        display: inline-block;
-        height: 160px;
+
+        display: flex;
         width:90%;
         padding:var(--ddd-spacing-4);
         margin: var(--ddd-spacing-5);
         border: solid 3px var(--ddd-theme-default-creekTeal);
         background:var(--ddd-theme-default-creekMaxLight);
       }
+      .answer-box{
+        display:flex;
+        flex-direction:row;
+      }
       .qn-image{
         width:200px;
         
-      }
-      .options-box{
-        display:flex;
       }
       .options,.answers{
         border:solid 2px black;
         padding:var(--ddd-spacing-2);
         margin: var(--ddd-spacing-2);
-        width:150px;
-        height:30px; 
+  
       }
     .clearbtn,.submitbtn{
     font-family: "Open Sans", sans-serif;
@@ -197,6 +197,10 @@ shuffle() {
     const j = Math.floor(Math.random() * (i + 1));
     [this.options[i], this.options[j]] = [this.options[j], this.options[i]];
   }
+}
+
+checkAnswers(){
+  
 }
 
   render() {
