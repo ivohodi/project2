@@ -181,7 +181,7 @@ clearOptions(){
   this.requestUpdate();
 }
 
-getData() {
+getData() { //retrieves data from json file
   fetch('src/data.json')
     .then((response) => response.json())
     .then((json) => {
@@ -197,7 +197,6 @@ getData() {
         choice.dataset.feedback = option.feedback;
         tags.push(choice);
       }
-
       tags.forEach(choice => {
         this.options.push(choice);
       });
@@ -205,7 +204,7 @@ getData() {
   });
 }
 
-shuffle() {
+shuffle() { //randomly shuffles right now 
   for (let i = this.options.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [this.options[i], this.options[j]] = [this.options[j], this.options[i]];
@@ -221,13 +220,13 @@ checkAnswers(){
         const feedback = this.answers[index].dataset.feedback;
         const isCorrect = this.answers[index].dataset.correct;
         this.answers[index].style.border = 'none';
-        //if the answer is correct, background is green
+        //if answer is correct, outline answer green
         if (isCorrect == "true") {
           allCorrect += 1;
           this.answers[index].style.border = 'var(--ddd-theme-default-opportunityGreen) 3px solid';
           this.answers[index].style.padding = 'var(--ddd-spacing-4)';
           this.shadowRoot.querySelector('.feedback-box').innerHTML +="<strong>" + ans.textContent + "</strong> is correct<br>";
-        //if the answer is wrong,background is red
+        //if answer is wrong,outline answer red
         } else {
           this.answers[index].style.border = 'var(--ddd-theme-default-original87Pink) 3px solid';
           this.answers[index].style.padding = 'var(--ddd-spacing-4)';
@@ -242,7 +241,7 @@ checkAnswers(){
     }
     this.requestUpdate();
 }
-  cleanCheck(){
+  cleanCheck(){//clears formatting
     this.shadowRoot.querySelector('.feedback-box').innerHTML ="";
     this.options.forEach((ans, index) => {
       this.options[index].style.border="transparent";
