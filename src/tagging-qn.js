@@ -83,6 +83,15 @@ export class TaggingQn extends DDD {
     justify-content:right;
     margin-right:var(--ddd-spacing-8);
   }
+  .answers,.options:hover{
+    cursor:grab;
+  }
+  .speech-bubble{
+    width:600px;
+    width:90%;
+    padding:var(--ddd-spacing-4);
+    margin: var(--ddd-spacing-5);
+  }
       
       `];
   }
@@ -200,7 +209,37 @@ shuffle() {
 }
 
 checkAnswers(){
-  
+
+ if (this.answers != '') {
+      this.shadowRoot.querySelector('.speech-bubble').innerHTML = ``;
+      this.teacherText = '';
+      let allCorrect = 0;
+      
+      //Gets the feedback and correct data from each answer
+      this.answers.forEach((ans, index) => {
+        const feedback = this.answers[index].dataset.feedback;
+        const isCorrect = this.answers[index].dataset.correct;
+        this.answers[index].style.border = 'none';
+        
+        //if the answer is correct, background is green
+        if (isCorrect == "true") {
+          allCorrect += 1;
+          this.answers[index].style.backgroundColor="green";
+          this.shadowRoot.querySelector('.speech-bubble').innerHTML +="<strong>" + ans.textContent + "</strong> is correct<br>";
+        //if the answer is wrong,background is red
+        } else {
+          this.answers[index].style.backgroundColor="red";
+          this.shadowRoot.querySelector('.speech-bubble').innerHTML +=  "<strong>" + ans.textContent + "</strong> is wrong because " + feedback + "<br>";
+        }
+      });
+      
+      //If all answers in answer box is correct, confetti rain
+      if (allCorrect == this.answers.length) {
+        this.makeItRain();
+      }
+
+    }
+    this.requestUpdate();
 }
 
   render() {
@@ -219,10 +258,10 @@ checkAnswers(){
           `)}
           </div>
         </div>
-
+        <div class="speech-bubble"></div>
         <div class="button-wrapper">
           <button class="clearbtn" @click="${this.clearOptions}"> Clear</button>
-          <button class="submitbtn" @click="${this.makeItRain}"> Submit</button>
+          <button class="submitbtn" @click="${this.checkAnswers}"> Submit</button>
         </div>
         
         
