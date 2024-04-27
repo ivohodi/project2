@@ -2,11 +2,11 @@
   "default": {
   "Yes": {
     "correct": true,
-    "feedback": "Well that was easy"
+    "feedback": "Good job."
   },
   "No": {
     "correct": false,
-    "feedback": "I mean... what did you expect?"
+    "feedback": "Try again."
   }
 },
   "haxLogo": {
@@ -53,7 +53,7 @@
       "feedback": "Russia is a country spanning Eastern Europe and North Asia"
     },
     "Egypt": {
-      "correct": false,
+      "correct": true,
       "feedback": "Egypt is a transcontinental country spanning the northeast corner of Africa and the Sinai Peninsula in the southwest corner of Asia"
     },
     "Greece": {
@@ -71,6 +71,14 @@
     "India": {
       "correct": false,
       "feedback": "India is a country that occupies the greater part of South Asia"
+    },
+    "Georgia": {
+      "correct": true,
+      "feedback": "Georgia is located mainly on the Asian portion of the Caucasus; however, the Municipality of Kazbegi are located north of the Greater Caucasus Watershed, which is geographically in Europe"
+    },
+    "Singapore": {
+      "correct": false,
+      "feedback": "Singapore is the best country in Southeast Asia."
     }
   }
 }

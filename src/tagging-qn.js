@@ -49,13 +49,12 @@ export class TaggingQn extends DDD {
       }
       .clearbtn,.submitbtn{
         font-family:var(--ddd-font-primary-regular);
-        font-size: 16px;
-        letter-spacing: 2px;
-        text-decoration: none;
+        font-size: var(--ddd-font-size-4xs);
+        letter-spacing: var(--ddd-ls-72-lg);
         text-transform: uppercase;
         color: var(--ddd-theme-default-coalyGray);
         cursor: pointer;
-        border: 3px solid;
+        border: var(--ddd-spacing-1) solid;
         padding: var(--ddd-spacing-2);
         margin:var(--ddd-spacing-2);
         box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
@@ -225,11 +224,13 @@ checkAnswers(){
         //if the answer is correct, background is green
         if (isCorrect == "true") {
           allCorrect += 1;
-          this.answers[index].style.backgroundColor="var(--ddd-theme-default-futureLime)";
+          this.answers[index].style.border = 'var(--ddd-theme-default-opportunityGreen) 3px solid';
+          this.answers[index].style.padding = 'var(--ddd-spacing-4)';
           this.shadowRoot.querySelector('.feedback-box').innerHTML +="<strong>" + ans.textContent + "</strong> is correct<br>";
         //if the answer is wrong,background is red
         } else {
-          this.answers[index].style.backgroundColor="var(--ddd-theme-default-alertImmediate)";
+          this.answers[index].style.border = 'var(--ddd-theme-default-original87Pink) 3px solid';
+          this.answers[index].style.padding = 'var(--ddd-spacing-4)';
           this.shadowRoot.querySelector('.feedback-box').innerHTML +=  "<strong>" + ans.textContent + "</strong> is wrong because " + feedback + "<br>";
         }
       });
@@ -244,10 +245,10 @@ checkAnswers(){
   cleanCheck(){
     this.shadowRoot.querySelector('.feedback-box').innerHTML ="";
     this.options.forEach((ans, index) => {
-      this.options[index].style.backgroundColor="transparent";
+      this.options[index].style.border="transparent";
     });
     this.answers.forEach((ques, index) => {
-      this.answers[index].style.backgroundColor="transparent";
+      this.answers[index].style.border="transparent";
     });
   }
 
@@ -272,8 +273,6 @@ checkAnswers(){
           <button class="clearbtn" @click="${this.clearOptions}"> Clear</button>
           <button class="submitbtn" @click="${this.checkAnswers}"> Submit</button>
         </div>
-        
-        
         <div class="options-box">
         ${this.options.map((option, index) => html`
         <div class="options">
