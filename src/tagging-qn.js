@@ -9,12 +9,13 @@ export class TaggingQn extends DDD {
 
   constructor() {
     super();
-    this.title = "Question Tags";
+    this.rambletxt = "";
     this.options=[];
     this.answers=[];
     this.draggedIndex;
     this.draggedFrom;
     this.answerSet = "default";
+    this.imgsrc="";
   }
 
   static get styles() {
@@ -25,74 +26,65 @@ export class TaggingQn extends DDD {
         display: flex;
       }
       .tagging-wrapper{
+        font-family:var(--ddd-font-primary-regular);
         padding:var(--ddd-spacing-2);
       }
       .answer-box,.options-box{
-
         display: flex;
-        width:90%;
         padding:var(--ddd-spacing-4);
         margin: var(--ddd-spacing-5);
         border: solid 3px var(--ddd-theme-default-creekTeal);
         background:var(--ddd-theme-default-creekMaxLight);
       }
-      .answer-box{
-        display:flex;
-        flex-direction:row;
+      .options,.answers{
+        font-family:var(--ddd-font-primary-regular);
+        border:solid 2px var(--ddd-theme-default-coalyGray);
+        padding:var(--ddd-spacing-2);
+        margin: var(--ddd-spacing-2);
       }
       .qn-image{
         width:200px;
-        
+        padding:var(--ddd-spacing-4);
+        margin: var(--ddd-spacing-3);
       }
-      .options,.answers{
-        border:solid 2px black;
-        padding:var(--ddd-spacing-2);
-        margin: var(--ddd-spacing-2);
-  
+      .clearbtn,.submitbtn{
+        font-family:var(--ddd-font-primary-regular);
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: var(--ddd-theme-default-coalyGray);
+        cursor: pointer;
+        border: 3px solid;
+        padding: var(--ddd-spacing-2);
+        margin:var(--ddd-spacing-2);
+        box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
       }
-    .clearbtn,.submitbtn{
-    font-family: "Open Sans", sans-serif;
-    font-size: 16px;
-    letter-spacing: 2px;
-    text-decoration: none;
-    text-transform: uppercase;
-    color: var(--ddd-theme-default-coalyGray);
-    cursor: pointer;
-    border: 3px solid;
-    padding: var(--ddd-spacing-2);
-    margin:var(--ddd-spacing-2);
-    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-  }
-
-    .clearbtn:active,.submitbtn:active {
-    box-shadow: 0px 0px 0px 0px;
-    top: 5px;
-    left: 5px;
-  }
-
-  @media (min-width: 768px) {
-    .clearbtn,.submitbtn {
-      padding: 0.25em 0.75em;
-    }
-  }
-  .button-wrapper{
-    display:flex;
-    justify-content:right;
-    margin-right:var(--ddd-spacing-8);
-  }
-  .answers,.options:hover{
-    cursor:grab;
-  }
-  .speech-bubble{
-    width:600px;
-    width:90%;
-    padding:var(--ddd-spacing-4);
-    margin: var(--ddd-spacing-5);
-  }
-      
+      .clearbtn:active,.submitbtn:active {
+        box-shadow: 0px 0px 0px 0px;
+        top: 5px;
+        left: 5px;
+      }
+      @media (min-width: 768px) {
+        .clearbtn,.submitbtn {
+          padding: 0.25em 0.75em;
+        }
+      }
+      .button-wrapper{
+        display:flex;
+        justify-content:right;
+        margin-right:var(--ddd-spacing-8);
+      }
+      .answers,.options:hover{
+        cursor:grab;
+      }
+      .feedback-box{
+        padding:var(--ddd-spacing-4);
+        margin: var(--ddd-spacing-5);
+      }
       `];
   }
 
@@ -119,42 +111,53 @@ export class TaggingQn extends DDD {
     this.getData();
   }
 
-// Drag Functions
+  // Drag Functions
+  dragStart(e) {
+    this.draggedIndex = parseInt(e.target.dataset.index);
+    this.draggedFrom = e.target.dataset.origin;
+    }
 
-dragStart(e) {
-  this.draggedIndex = parseInt(e.target.dataset.index);
-  this.draggedFrom = e.target.dataset.origin;
+  dragOver(e) {
+    e.preventDefault();
+  }
+  dragEnter(e) {
+    e.preventDefault();
+    e.target.classList.add('hovered');
   }
 
-dragOver(e) {
-  e.preventDefault();
-}
-dragEnter(e) {
-  e.preventDefault();
-  e.target.classList.add('hovered');
-}
-
-dragLeave(e) {
-  e.target.classList.remove('hovered');
-}
-
-drop(e, target) {
-  e.preventDefault();
-  e.target.classList.remove('hovered');
-
-  if (target === 'answer-box') {
-    if (this.draggedFrom != 'answer-box') {
-      this.answers.push(this.options[this.draggedIndex]);
-      this.options.splice(this.draggedIndex, 1);
-    }
-  } else if (target === 'options-box') {
-    if (this.draggedFrom != 'options-box') {
-      this.options.push(this.answers[this.draggedIndex]);
-      this.answers.splice(this.draggedIndex, 1);
-    }
+  dragLeave(e) {
+    e.target.classList.remove('hovered');
   }
-  this.requestUpdate();
-}
+
+  drop(e, target,index,from) {
+    e.preventDefault();
+    //if this vals are null, set them to index and from (this is for pressing the buttons instead of drag and drop)
+    if (this.draggedFrom == null || this.draggedIndex == null) {
+      this.draggedFrom = from;
+      this.draggedIndex = index;
+    }
+
+    e.target.classList.remove('hovered');
+
+    if (target === 'answer-box') {
+      if (this.draggedFrom != 'answer-box') {
+        this.answers.push(this.options[this.draggedIndex]);
+        this.options.splice(this.draggedIndex, 1);
+      }
+    } else if (target === 'options-box') {
+      if (this.draggedFrom != 'options-box') {
+        this.options.push(this.answers[this.draggedIndex]);
+        this.answers.splice(this.draggedIndex, 1);
+      }
+    } 
+    this.requestUpdate();
+
+    this.cleanCheck();
+    this.draggedIndex = null;
+    this.draggedFrom = null;
+
+    this.requestUpdate();
+  }
 
 makeItRain() { //confetti 
   import("@lrnwebcomponents/multiple-choice/lib/confetti-container.js").then(
@@ -170,8 +173,10 @@ clearOptions(){
   if (this.answers != '') {
     this.answers.forEach(answer => {
       this.options.push(answer);
+
     });
     this.answers = [];
+    this.cleanCheck();
   }
   this.shuffle();
   this.requestUpdate();
@@ -209,30 +214,25 @@ shuffle() {
 }
 
 checkAnswers(){
-
  if (this.answers != '') {
-      this.shadowRoot.querySelector('.speech-bubble').innerHTML = ``;
-      this.teacherText = '';
+      this.shadowRoot.querySelector('.feedback-box').innerHTML = ``;
       let allCorrect = 0;
-      
       //Gets the feedback and correct data from each answer
       this.answers.forEach((ans, index) => {
         const feedback = this.answers[index].dataset.feedback;
         const isCorrect = this.answers[index].dataset.correct;
         this.answers[index].style.border = 'none';
-        
         //if the answer is correct, background is green
         if (isCorrect == "true") {
           allCorrect += 1;
-          this.answers[index].style.backgroundColor="green";
-          this.shadowRoot.querySelector('.speech-bubble').innerHTML +="<strong>" + ans.textContent + "</strong> is correct<br>";
+          this.answers[index].style.backgroundColor="var(--ddd-theme-default-futureLime)";
+          this.shadowRoot.querySelector('.feedback-box').innerHTML +="<strong>" + ans.textContent + "</strong> is correct<br>";
         //if the answer is wrong,background is red
         } else {
-          this.answers[index].style.backgroundColor="red";
-          this.shadowRoot.querySelector('.speech-bubble').innerHTML +=  "<strong>" + ans.textContent + "</strong> is wrong because " + feedback + "<br>";
+          this.answers[index].style.backgroundColor="var(--ddd-theme-default-alertImmediate)";
+          this.shadowRoot.querySelector('.feedback-box').innerHTML +=  "<strong>" + ans.textContent + "</strong> is wrong because " + feedback + "<br>";
         }
       });
-      
       //If all answers in answer box is correct, confetti rain
       if (allCorrect == this.answers.length) {
         this.makeItRain();
@@ -241,24 +241,33 @@ checkAnswers(){
     }
     this.requestUpdate();
 }
+  cleanCheck(){
+    this.shadowRoot.querySelector('.feedback-box').innerHTML ="";
+    this.options.forEach((ans, index) => {
+      this.options[index].style.backgroundColor="transparent";
+    });
+    this.answers.forEach((ques, index) => {
+      this.answers[index].style.backgroundColor="transparent";
+    });
+  }
 
   render() {
     return html`
       <confetti-container id="confetti">
       <div class="tagging-wrapper"> 
-        <h1 >${this.title}</h1>
-        <img class="qn-image" src="images/haxpsu.png" alt="haxpsu">
+        <div class="rambletxt">${this.rambletxt}</div>
+        <img class="qn-image" src="${this.imgsrc}" alt="image">
         <div>${this.questiontext}</div>
         <div class="answer-box">
           Drag Answers Here
           ${this.answers.map((answer, index) => html`
           <div class="answers-wrapper">
-            <div class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
+            <div  @click="${(e) => this.drop(e,"options-box", index, "answer-box")}" class="answers" draggable="true" data-index="${index}" data-origin="answer-box">${answer}</div>
           </div>
           `)}
           </div>
         </div>
-        <div class="speech-bubble"></div>
+        <div class="feedback-box"></div>
         <div class="button-wrapper">
           <button class="clearbtn" @click="${this.clearOptions}"> Clear</button>
           <button class="submitbtn" @click="${this.checkAnswers}"> Submit</button>
@@ -268,7 +277,7 @@ checkAnswers(){
         <div class="options-box">
         ${this.options.map((option, index) => html`
         <div class="options">
-          <div draggable="true" data-index="${index}" data-origin="options-box">${option}</div>
+          <div @click="${(e) => this.drop(e,"answer-box", index, "options-box")}" draggable="true" data-index="${index}" data-origin="options-box">${option}</div>
         </div>
         </div>
         `)}
@@ -279,13 +288,14 @@ checkAnswers(){
 
   static get properties() {
     return {
-      title: { type: String },
+      rambletxt: { type: String },
       questiontext: {type:String},
       options:{type:Array, reflect:true},
       answers:{type:Array, reflect:true},
       draggedIndex: { type: Number, reflect: true },
       draggedFrom: { type: String, reflect: true},
       answerSet: { type: String, reflect: true},
+      imgsrc:{type:String,reflect:true}
     };
   }
 }

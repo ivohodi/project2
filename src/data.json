@@ -12,65 +12,65 @@
   "haxLogo": {
     "good form": {
       "correct": true,
-      "feedback": "The shape of the vase clearly demonstrates craftsmanship."
+      "feedback": "the shape of the vase clearly demonstrates craftsmanship."
     },
     "poor taste": {
       "correct": false,
-      "feedback": "Taste is in the eye of the designer as well as the viewer."
+      "feedback": "taste is in the eye of the designer as well as the viewer."
     },
     "contrasting themes": {
       "correct": false,
-      "feedback": "There is uniformity in the shape, but there is no depth to this media to imply that it is contrasting with other figures."
+      "feedback": "there is uniformity in the shape, but there is no depth to this media to imply that it is contrasting with other figures."
     },
     "AI": {
       "correct": true,
-      "feedback": "While a modification of prior work, this is still AI generative work."
+      "feedback": "while a modification of prior work, this is still AI generative work."
     },
     "shading": {
       "correct": false,
-      "feedback": "While there is a light source and a shadow cast, shading is a term used for pencil based sketching."
+      "feedback": "while there is a light source and a shadow cast, shading is a term used for pencil based sketching."
     },
     "original work": {
-      "correct": false,
-      "feedback": "Artwork created from gerenateive AI can not be original since it is trained on other artists work."
+      "correct": true,
+      "feedback": "this character is not based on any person, place, or existing trope"
     },
     "accessible": {
       "correct": false,
-      "feedback": "The color scheme while high contrast in some areas, loses form in others and has written text unrelated to the character."
+      "feedback": "the color scheme while high contrast in some areas, loses form in others and has written text unrelated to the character."
     }
   },
-  "8bitSpace": {
-    "Space is purple": {
+  "geography": {
+    "Spain": {
+      "correct": false,
+      "feedback": "Spain is in Europe"
+    },
+    "Turkey": {
       "correct": true,
-      "feedback": "The background is purple!"
+      "feedback": "Turkey is a country mainly in Anatolia in West Asia, with a smaller part called East Thrace in Southeast Europe"
     },
-    "Has rocketship": {
+    "Russia": {
       "correct": true,
-      "feedback": "The rocketship is above the moon!"
+      "feedback": "Russia is a country spanning Eastern Europe and North Asia"
     },
-    "has Earth": {
+    "Egypt": {
       "correct": false,
-      "feedback": "There is only a moon!"
+      "feedback": "Egypt is a transcontinental country spanning the northeast corner of Africa and the Sinai Peninsula in the southwest corner of Asia"
     },
-    "has astronauts": {
+    "Greece": {
       "correct": false,
-      "feedback": "No humans in the picture!"
+      "feedback": "Greece is a country in the south-east of Europe"
     },
-    "is realistic": {
-      "correct": false,
-      "feedback": "Image is 8bit!"
-    },
-    "has stars": {
+    "Kazakhstan": {
       "correct": true,
-      "feedback": "There are many stars!"
+      "feedback": "Kazakhstan is a landlocked country mostly in Central Asia, with a part in Eastern Europe"
     },
-    "rocket is stationary": {
+    "Germany": {
       "correct": false,
-      "feedback": "Rocket is flying!"
+      "feedback": " is a country in Central and Western Europe that stretches from the Alps, across the North European Plain to the North Sea and the Baltic Sea"
     },
-    "UFO?": {
+    "India": {
       "correct": false,
-      "feedback": "No signs of alien life!"
+      "feedback": "India is a country that occupies the greater part of South Asia"
     }
   }
 }
