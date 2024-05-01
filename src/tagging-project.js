@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { DDD } from "@lrnwebcomponents/d-d-d/d-d-d.js";
 
-export class TaggingQn extends DDD {
+export class TaggingProject extends DDD {
 
   static get tag() {
-    return 'tagging-qn';
+    return 'tagging-project';
   }
 
   constructor() {
@@ -182,11 +182,10 @@ clearOptions(){
 }
 
 getData() { //retrieves data from json file
-  fetch('src/data.json')
+  fetch('assets/data.json')
     .then((response) => response.json())
     .then((json) => {
       const possibleQuestions = json[this.answerSet];
-
       this.options = [];
       const tags = [];
       for (const key in possibleQuestions) {
@@ -297,4 +296,4 @@ checkAnswers(){
     };
   }
 }
-globalThis.customElements.define(TaggingQn.tag, TaggingQn);
+globalThis.customElements.define(TaggingProject.tag, TaggingProject);
